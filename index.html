@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/jQuery.js"></script>
 </head>
 <body>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
+
     <script>
-      var allEnemies = [];
-      for (i = 0; i < 3; i++) {
-        allEnemies.push(new Enemy());
-      }
-      var player = new Player();
+       var player = new Player(choosePlayer());
+       var allEnemies = [];
+       for (i = 0; i < 3; i++) {
+         allEnemies.push(new Enemy());
+       }
+
     </script>
+
 </body>
 </html>
