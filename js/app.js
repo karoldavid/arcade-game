@@ -1,3 +1,22 @@
+
+var count = 0,
+    counter = setInterval(timer, 1000);
+
+function checkTime(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
+function timer() {
+  ctx.font = '20pt Calibri';
+  ctx.fillStyle = 'red';
+  ctx.fillText(count, 400, 605);
+  count = count + 1;
+  clearInterval(counter);
+}
+
 function getRandomSpeed(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -47,38 +66,12 @@ Enemy.prototype.reset = function() {
 }
 
 var Player = function(chosenPlayer) {
-  this.sprite = chosenPlayer;
+  this.sprite = "images/char-boy.png";
   this.x = 200;
   this.y = 400;
   this.speed = 1;
   this.move = { 'x' : 0, 'y' : 0 };
   this.score = 0;
-}
-
-function choosePlayer() {
-    var canvas = document.getElementsByTagName("canvas")[0],
-        playerImage = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl'],
-        imageUrl,
-        image = 0,
-        imageObj = new Image();
-
-        ctx.font = '35pt Calibri';
-        ctx.fillStyle = 'black';
-        ctx.fillText("Classic Arcade Game",  canvas.width / 2 - 200, canvas.height / 2 - 50);
-
-        ctx.font = '20pt Calibri';
-        ctx.fillStyle = 'red';
-        ctx.fillText("Press Enter to Choose Player",  canvas.width / 2 - 150, canvas.height / 2 - 10);
-
-        function changeImage() {
-          imageUrl = "images/char-" + playerImage[image] + ".png";
-          imageObj.src = imageUrl;
-          ctx.drawImage(imageObj, canvas.width / 2 - 50, canvas.height / 2);
-          image = image === 4 ? 0 : image + 1;
-          //setTimeout(changeImage, 2000);
-          return imageUrl;
-        }
-    return changeImage();
 }
 
 function chosenPlayer(currentPlayer) {
@@ -100,6 +93,7 @@ Player.prototype.update = function() {
     this.reset(false);
   }
   this.updateScore();
+  timer();
 }
 
 Player.prototype.render = function() {
@@ -129,7 +123,10 @@ Player.prototype.reset = function(collision) {
   this.move = { 'x' : 0, 'y' : 0 };
   if (collision) {
     this.score = 0;
+  } else {
+    this.score += count;
   }
+  count = 0;
 }
 
 Player.prototype.updateScore = function() {
