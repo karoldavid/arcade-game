@@ -45,6 +45,7 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
+
         update(dt);
         render();
 
@@ -80,7 +81,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,7 +96,19 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-        if (gem != null ) { gem.update(); }
+        gem.update();
+        timer();
+    }
+
+    function checkCollisions() {
+      allEnemies.forEach(function(enemy) {
+        if (enemy.checkCollision()) {
+          player.reset(true);
+        }
+      });
+      if (gem.checkCollision()) {
+        gem.hide();
+      }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -153,7 +166,7 @@ var Engine = (function(global) {
         });
 
         player.render();
-        if (gem != null) { gem.render(); }
+        gem.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -161,7 +174,9 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+      ctx.font = '20pt Calibri';
+      ctx.fillStyle = 'red';
+      ctx.fillText("Game Over", 100, 200);
     }
 
     /* Go ahead and load all of the images we know we're going to need to

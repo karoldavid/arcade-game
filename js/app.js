@@ -1,3 +1,9 @@
+/*
+ *
+ * timer
+ *
+ */
+
 var count = 0,
     counter = setInterval(timer, 1000);
 
@@ -13,6 +19,12 @@ function timeOut() {
   if (count > 2500) return true;
   return false;
 }
+
+/*
+ *
+ * random
+ *
+ */
 
 function getRandomValue(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -40,28 +52,20 @@ function getImageURL() {
 }
 
 var Gem = function() {
-  var numRows = 3,
-      numCols = 4,
-      row = getRandomValue(1, numRows),
-      col = getRandomValue(0, numCols);
   this.sprite = getImageURL();
-  this.x = col * 101;
-  this.y = row * 70;
+  this.x = getRandomValue(0, 4) * 101;
+  this.y = getRandomValue(1, 3)* 70;
 }
 
 Gem.prototype.update = function() {
-  if (this.detectCollision()) {
-    this.hide();
-    player.score += 10;
-    player.updateScore();
-  }
+
 }
 
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Gem.prototype.detectCollision = function() {
+Gem.prototype.checkCollision = function() {
   var gemBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
       g = { "right" : this.x + gemBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + gemBox.y },
@@ -74,6 +78,7 @@ Gem.prototype.detectCollision = function() {
 }
 
 Gem.prototype.reset = function() {
+  this.sprite = getImageURL();
   this.x = getRandomValue(0, 4) * 101;
   this.y = getRandomValue(1, 3) * 70;
 }
@@ -81,6 +86,7 @@ Gem.prototype.reset = function() {
 Gem.prototype.hide = function() {
   this.x = -100;  // off canvas
   this.y = -100; // off canvas
+  player.score += 10; // player score inreases because gem only hides because of collision with player
 }
 
 /*
@@ -102,14 +108,13 @@ Enemy.prototype.update = function(dt) {
   } else {
     this.reset();
   }
-  if (this.detectCollision()) player.reset(true);
 }
 
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Enemy.prototype.detectCollision = function() {
+Enemy.prototype.checkCollision = function() {
   var enemyBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
       e = { "right" : this.x + enemyBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + enemyBox.y },
@@ -154,9 +159,7 @@ Player.prototype.getPlayerName = function() {
       length = playerNames.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerNames[i])){
-      return playerNames[i];
-    }
+    if (currentPlayer.match(playerNames[i])) return playerNames[i];
   }
 }
 
@@ -165,9 +168,7 @@ Player.prototype.chosenPlayer = function() {
       length = playerImage.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerImage[i]) && i + 1 < length) {
-      return "images/char-" + playerImage[i+1] + "-girl" + ".png";
-    }
+    if (currentPlayer.match(playerImage[i]) && i + 1 < length) return "images/char-" + playerImage[i+1] + "-girl" + ".png";
   }
   return "images/char-" + playerImage[0] + ".png";
 }
@@ -181,7 +182,6 @@ Player.prototype.update = function() {
   if (timeOut()) this.reset(true);
   this.updateScore();
   writePlayerName(this.name);
-  timer();
 }
 
 Player.prototype.render = function() {
