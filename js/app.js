@@ -2,34 +2,86 @@
 var count = 0,
     counter = setInterval(timer, 1000);
 
-function checkTime(i) {
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-}
-
 function timer() {
-  ctx.font = '20pt Calibri';
+  ctx.font = '15pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText(count, 400, 605);
+  ctx.fillText("Timer: " + count, 200, 605);
   count = count + 1;
   clearInterval(counter);
 }
 
-function getRandomSpeed(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function timeOut() {
+  if (count > 2500) return true;
+  return false;
 }
 
-function getRandomHeight(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomValue(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var Gem = function() {
+  var gemImages = [
+          'images/Gem Blue.png',
+          'images/Gem Green.png',
+          'images/Gem Orange.png',
+          'images/Heart.png',
+          'images/Key.png',
+          'images/Rock.png',
+          'images/Selector.png',
+          'images/Star.png',
+        ],
+        length = gemImages.length - 1,
+        numRows = 3,
+        numCols = 4,
+        image = getRandomValue(0, length);
+        row = getRandomValue(1, numRows);
+        col = getRandomValue(0, numCols);
+  this.sprite = gemImages[image];
+  this.x = col * 101;
+  this.y = row * 70;
+}
+
+Gem.prototype.update = function() {
+  if (this.detectCollision()) {
+    this.hide();
+    player.score += 10;
+    player.updateScore();
+  }
+}
+
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Gem.prototype.detectCollision = function() {
+  var gemBox = { 'x' : 50, 'y' : 50 },
+      playerBox = { 'x' : 50, 'y' : 50 },
+      g = { "right" : this.x + gemBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + gemBox.y },
+      p = { "right" : player.x + playerBox.x, "left" : player.x, "top" : player.y, "bottom" : player.y + playerBox.y };
+
+  return !( g.left > p.right ||
+            g.right < p.left ||
+            g.top > p.bottom ||
+            g.bottom < p.top);
+}
+
+Gem.prototype.reset = function() {
+  this.x = getRandomValue(0, 4);
+  this.y = getRandomValue(1, 3);
+}
+
+Gem.prototype.hide = function() {
+  this.x = -100;  // off canvas
+  this.y = -100; // off canvas
 }
 
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = -50;
-    this.y = getRandomHeight(50,250);
-    this.speed = getRandomSpeed(20,60);
+    var numRows = 3;
+    row = getRandomValue(1, numRows);// Math.floor(Math.random() * (numRows - 1 + 1)) + 1,
+    this.y = row * 70;
+    this.speed = getRandomValue(20,100);
 }
 
 Enemy.prototype.update = function(dt) {
@@ -38,7 +90,7 @@ Enemy.prototype.update = function(dt) {
   } else {
     this.reset();
   }
-  if (this.detectCollission()) {
+  if (this.detectCollision()) {
     player.reset(true);
   }
 }
@@ -47,7 +99,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Enemy.prototype.detectCollission = function() {
+Enemy.prototype.detectCollision = function() {
   var enemyBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
       e = { "right" : this.x + enemyBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + enemyBox.y },
@@ -61,11 +113,11 @@ Enemy.prototype.detectCollission = function() {
 
 Enemy.prototype.reset = function() {
   this.x = -50;
-  this.y = getRandomHeight(50,250);
-  this.speed = getRandomSpeed(20,60);
+  this.y = getRandomValue(1, 3) * 70;
+  this.speed = getRandomValue(20,100);
 }
 
-var Player = function(chosenPlayer) {
+var Player = function() {
   this.sprite = "images/char-boy.png";
   this.x = 200;
   this.y = 400;
@@ -74,12 +126,22 @@ var Player = function(chosenPlayer) {
   this.score = 0;
 }
 
+function writePlayerName(currentPlayer) {
+  var playerName = ['boy', 'cat', 'horn', 'pink', 'princess'],
+      length = playerName.length;
+    for (var i = 0; i < length; i++) {
+        if (currentPlayer.match(playerName[i])){
+          ctx.font = '15pt Calibri';
+          ctx.fillStyle = 'red';
+          ctx.fillText(playerName[i], 400, 605);
+        }
+    }
+}
+
 function chosenPlayer(currentPlayer) {
   var playerImage = ['boy', 'cat-girl', 'horn-girl', 'pink-girl', 'princess-girl'],
-      imageUrl;
-    var length = playerImage.length;
+      length = playerImage.length;
     for (var i = 0; i < length; i++) {
-      console.log(playerImage[i]);
         if (currentPlayer.match(playerImage[i]) && i + 1 < length) return "images/char-" + playerImage[i+1] + ".png";
     }
     return "images/char-" + playerImage[0] + ".png";
@@ -89,10 +151,12 @@ function chosenPlayer(currentPlayer) {
 Player.prototype.update = function() {
   this.inBounds();
   if (this.detectGoal()) {
-    this.score += 10;
+    this.score += 100;
     this.reset(false);
   }
+  if (timeOut()) this.reset(true);
   this.updateScore();
+  writePlayerName(this.sprite);
   timer();
 }
 
@@ -124,15 +188,17 @@ Player.prototype.reset = function(collision) {
   if (collision) {
     this.score = 0;
   } else {
-    this.score += count;
+    this.score -= Math.round(count / 10);
+    if (this.score < 0) this.score = 0;
   }
   count = 0;
+  gem.reset();
 }
 
 Player.prototype.updateScore = function() {
   var canvas = document.getElementsByTagName("canvas")[0];
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = '20pt Calibri';
+  ctx.font = '15pt Calibri';
   ctx.fillStyle = 'red';
   ctx.fillText("Score: " + this.score, 0, 605);
 }
@@ -141,15 +207,19 @@ Player.prototype.handleInput = function(key) {
   switch(key){
     case 'left' :
       this.move.x = -this.speed;
+      this.move.y = 0;
       break;
     case 'up' :
       this.move.y = -this.speed;
+      this.move.x = 0;
       break;
     case 'right' :
       this.move.x = this.speed;
+      this.move.y = 0;
       break;
     case 'down' :
       this.move.y = this.speed;
+      this.move.x = 0;
       break;
     }
 }
@@ -161,10 +231,10 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-    var playerKey = {
+    var changePlayerKey = {
       13: 'enter'
     }
-    if (playerKey[e.keyCode]) {
+    if (changePlayerKey[e.keyCode]) {
       player.sprite = chosenPlayer(player.sprite);
     }
     player.handleInput(allowedKeys[e.keyCode]);
