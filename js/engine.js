@@ -153,7 +153,6 @@ var Engine = (function(global) {
         });
 
         player.render();
-        console.log(gem);
         if (gem != null) { gem.render(); }
     }
 
