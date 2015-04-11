@@ -45,7 +45,7 @@ var count = 0,
 function writeTimer() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText("Timer: " + count, 200, 603);
+  ctx.fillText("200/ " + count, 200, 603);
   count = count + 1;
   clearInterval(counter);
 }
@@ -109,9 +109,18 @@ Gem.prototype.checkCollision = function() {
 Gem.prototype.hide = function() {
   this.x = -100;  // put gem off canvas after player collects gem
   this.y = -100; // put gem off canvas after player collects gem
-  player.score += 10; // player score inreases when gem collision with player occurs
+  player.score += this.gemScore(); // player score inreases when gem collision with player occurs
 }
 
+Gem.prototype.gemScore = function() {
+  var gemScores = { 'Blue' : 10, 'Green' : 20, 'Orange' : 30, 'Heart' : 40, 'Key' : 100, 'Rock' : 0, 'Selector' : 5, 'Star' : 100 },
+      currentGem = this.sprite;
+
+  for (g in gemScores) {
+    if (currentGem.match(g)) return gemScores[g];
+  }
+  return 0;
+}
 /*
  *
  * enemies
