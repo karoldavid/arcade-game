@@ -1,33 +1,58 @@
 /*
  *
- * timer
- *
- */
-
-var count = 0,
-    counter = setInterval(timer, 1000);
-
-function timer() {
-  ctx.font = '15pt Calibri';
-  ctx.fillStyle = 'red';
-  ctx.fillText("Timer: " + count, 200, 605);
-  count = count + 1;
-  clearInterval(counter);
-}
-
-function timeOut() {
-  if (count > 2500) return true;
-  return false;
-}
-
-/*
- *
  * random
  *
  */
 
 function getRandomValue(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/*
+ *
+ * game info text
+ *
+ */
+
+function clearCanvasTop() {
+  var canvas = document.getElementsByTagName("canvas")[0];
+  ctx.clearRect(0, 0, canvas.width, 60);
+}
+
+function clearCanvasBottom() {
+  var canvas = document.getElementsByTagName("canvas")[0];
+  ctx.clearRect(0, 585, canvas.width, canvas.height);
+}
+
+function writeGameInfo() {
+  ctx.font = '20pt Calibri';
+  ctx.fillStyle = 'blue';
+  ctx.fillText("Classic Arcade Game", 0, 40);
+  ctx.font = '14pt Calibri';
+  ctx.fillStyle = 'red';
+  ctx.fillText("Press Enter to Change Player", 250, 40);
+}
+
+/*
+ *
+ * timer
+ *
+ */
+
+var count = 0,
+    counter = setInterval(writeTimer, 1000);
+
+function writeTimer() {
+  ctx.font = '14pt Calibri';
+  ctx.fillStyle = 'red';
+  ctx.fillText("Timer: " + count, 200, 603);
+  count = count + 1;
+  clearInterval(counter);
+}
+
+function timeOut() {
+  if (count > 200) return true;
+  return false;
 }
 
 /*
@@ -55,8 +80,14 @@ var Gem = function() {
   this.init();
 }
 
-Gem.prototype.update = function() {
+Gem.prototype.init = function() {
+  this.sprite = getImageURL();
+  this.x = getRandomValue(0, 4) * 101;
+  this.y = getRandomValue(1, 3) * 70;
+}
 
+Gem.prototype.reset = function() {
+  this.init();
 }
 
 Gem.prototype.render = function() {
@@ -74,20 +105,11 @@ Gem.prototype.checkCollision = function() {
             g.top > p.bottom ||
             g.bottom < p.top);
 }
-Gem.prototype.init = function() {
-  this.sprite = getImageURL();
-  this.x = getRandomValue(0, 4) * 101;
-  this.y = getRandomValue(1, 3) * 70;
-}
-
-Gem.prototype.reset = function() {
-  this.init();
-}
 
 Gem.prototype.hide = function() {
-  this.x = -100;  // off canvas
-  this.y = -100; // off canvas
-  player.score += 10; // player score inreases because gem only hides because of collision with player
+  this.x = -100;  // put gem off canvas after player collects gem
+  this.y = -100; // put gem off canvas after player collects gem
+  player.score += 10; // player score inreases when gem collision with player occurs
 }
 
 /*
@@ -98,16 +120,16 @@ Gem.prototype.hide = function() {
 
 var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
-    this.x = -50; // start off canvas
+    this.x = -101; // start off canvas
     this.y = getRandomValue(1, 3) * 70;
     this.speed = getRandomValue(80,200);
 }
 
 Enemy.prototype.update = function(dt) {
-  if (this.x <= 550) {
+  if (this.x <= 606) {
     this.x = this.x + (this.speed * dt);
   } else {
-    this.reset();
+    this.reset(); // enemy reaches right side of board
   }
 }
 
@@ -115,6 +137,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+// checks collision of enemies with player
 Enemy.prototype.checkCollision = function() {
   var enemyBox = { 'x' : 75, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
@@ -127,8 +150,9 @@ Enemy.prototype.checkCollision = function() {
             e.bottom < p.top);
 }
 
+// enemy gets new random coordinats and speed
 Enemy.prototype.reset = function() {
-  this.x = -50; // start off canvas
+  this.x = -101; // start off canvas
   this.y = getRandomValue(1, 3) * 70;
   this.speed = getRandomValue(80,300);
 }
@@ -138,12 +162,6 @@ Enemy.prototype.reset = function() {
  * player
  *
  */
-
-function writePlayerName(currentPlayer) {
-  ctx.font = '15pt Calibri';
-  ctx.fillStyle = 'red';
-  ctx.fillText(currentPlayer, 400, 605);
-}
 
 var Player = function() {
   this.sprite = "images/char-boy.png"; // default player
@@ -155,6 +173,7 @@ var Player = function() {
   this.name = this.getPlayerName();
 }
 
+// compares sprite url with names array to discract current player name
 Player.prototype.getPlayerName = function() {
   var playerNames = ['boy', 'cat', 'horn', 'pink', 'princess'],
       length = playerNames.length,
@@ -164,31 +183,37 @@ Player.prototype.getPlayerName = function() {
   }
 }
 
-Player.prototype.chosenPlayer = function() {
-  var playerImage = ['boy', 'cat', 'horn', 'pink', 'princess'],
-      length = playerImage.length,
+// shuffles player when 'enter' is hit
+// matches current player sprite url against images array and shuffles accordingly
+Player.prototype.shufflePlayer = function() {
+  var playerImages = ['boy', 'cat', 'horn', 'pink', 'princess'],
+      length = playerImages.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerImage[i]) && i + 1 < length) return "images/char-" + playerImage[i+1] + "-girl" + ".png";
+    if (currentPlayer.match(playerImages[i]) && i + 1 < length) return "images/char-" + playerImages[i+1] + "-girl" + ".png";
   }
-  return "images/char-" + playerImage[0] + ".png";
+  return "images/char-" + playerImages[0] + ".png";
 }
 
 Player.prototype.update = function() {
-  this.moveInBounds();
+  this.moveInBounds(); // player position only changes within the defined bounds
   if (this.detectGoal()) {
-    this.score += 100;
-    this.reset(false);
+    this.score += 100; // score increas by 100 when player reaches water
+    this.reset(false); // game continues from start
   }
-  if (timeOut()) this.reset(true);
-  this.updateScore();
-  writePlayerName(this.name);
+  if (timeOut()) {
+    this.reset(true);
+  }
+  clearCanvasBottom();
+  this.writePlayerName();
+  this.writeScore();
 }
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+// makes sure that player coordinates only change if the player moves inside the given bounds
 Player.prototype.moveInBounds = function() {
   var newX = this.x + this.move.x,
       newY = this.y + this.move.y;
@@ -197,6 +222,7 @@ Player.prototype.moveInBounds = function() {
   this.move = { 'x' : 0, 'y' : 0 };
 }
 
+// checks if the player reaches water
 Player.prototype.detectGoal = function() {
   return !( this.y >= 0);
 }
@@ -209,19 +235,23 @@ Player.prototype.reset = function(collision) {
   if (collision) {
     this.score = 0;
   } else {
-    this.score -= Math.round(count / 10);
+    this.score -= Math.round(count / 10); // the more time the player needs to reach the water, the more score he looses
     if (this.score < 0) this.score = 0;
   }
   count = 0;
-  gem.reset();
+  gem.reset(); // make geme reappear
 }
 
-Player.prototype.updateScore = function() {
-  var canvas = document.getElementsByTagName("canvas")[0];
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = '15pt Calibri';
+Player.prototype.writeScore = function() {
+  ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText("Score: " + this.score, 0, 605);
+  ctx.fillText("Score: " + this.score, 0, 603);
+}
+
+Player.prototype.writePlayerName = function() {
+  ctx.font = '14pt Calibri';
+  ctx.fillStyle = 'red';
+  ctx.fillText(this.name, 400, 603);
 }
 
 Player.prototype.handleInput = function(key) {
@@ -243,7 +273,7 @@ Player.prototype.handleInput = function(key) {
       this.move.x = 0;
       break;
     case 'enter' :
-      this.sprite = this.chosenPlayer();
+      this.sprite = this.shufflePlayer();
       this.name = this.getPlayerName();
       break;
     }
@@ -257,7 +287,7 @@ Player.prototype.handleInput = function(key) {
 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        13: 'enter', // change player
+        13: 'enter', // shuffle player
         37: 'left',
         38: 'up',
         39: 'right',

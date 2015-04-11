@@ -96,18 +96,20 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-        gem.update();
-        timer();
+
+        clearCanvasTop();
+        writeGameInfo();
+        writeTimer();
     }
 
     function checkCollisions() {
       allEnemies.forEach(function(enemy) {
         if (enemy.checkCollision()) {
-          player.reset(true);
+          player.reset(true); // player looses all scores and game starts from zero
         }
       });
       if (gem.checkCollision()) {
-        gem.hide();
+        gem.hide(); // gem hides off canvas after player collects it
       }
     }
 
@@ -174,7 +176,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-    
+
     }
 
     /* Go ahead and load all of the images we know we're going to need to
