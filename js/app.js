@@ -52,9 +52,7 @@ function getImageURL() {
 }
 
 var Gem = function() {
-  this.sprite = getImageURL();
-  this.x = getRandomValue(0, 4) * 101;
-  this.y = getRandomValue(1, 3)* 70;
+  this.init();
 }
 
 Gem.prototype.update = function() {
@@ -76,11 +74,14 @@ Gem.prototype.checkCollision = function() {
             g.top > p.bottom ||
             g.bottom < p.top);
 }
-
-Gem.prototype.reset = function() {
+Gem.prototype.init = function() {
   this.sprite = getImageURL();
   this.x = getRandomValue(0, 4) * 101;
   this.y = getRandomValue(1, 3) * 70;
+}
+
+Gem.prototype.reset = function() {
+  this.init();
 }
 
 Gem.prototype.hide = function() {
@@ -115,10 +116,10 @@ Enemy.prototype.render = function() {
 }
 
 Enemy.prototype.checkCollision = function() {
-  var enemyBox = { 'x' : 50, 'y' : 50 },
+  var enemyBox = { 'x' : 75, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
       e = { "right" : this.x + enemyBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + enemyBox.y },
-      p = { "right" : player.x + playerBox.x, "left" : player.x, "top" : player.y, "bottom" : player.y + playerBox.y };
+      p = { "right" : player.x + playerBox.x, "left" : player.x , "top" : player.y, "bottom" : player.y + playerBox.y };
 
   return !( e.left > p.right ||
             e.right < p.left ||
