@@ -147,7 +147,7 @@ function writePlayerName(currentPlayer) {
 var Player = function() {
   this.sprite = "images/char-boy.png"; // default player
   this.x = 200;
-  this.y = 400;
+  this.y = 370;
   this.speed = 1;
   this.move = { 'x' : 0, 'y' : 0 };
   this.score = 0;
@@ -191,8 +191,9 @@ Player.prototype.render = function() {
 Player.prototype.moveInBounds = function() {
   var newX = this.x + this.move.x,
       newY = this.y + this.move.y;
-  if (newX >= 0 && newX <= 400) this.x = newX;
-  if (newY >= -10 && newY <= 400) this.y = newY;
+  if (newX >= -80 && newX <= 480) this.x = newX;
+  if (newY >= -90 && newY <= 370) this.y = newY;
+  this.move = { 'x' : 0, 'y' : 0 };
 }
 
 Player.prototype.detectGoal = function() {
@@ -201,7 +202,7 @@ Player.prototype.detectGoal = function() {
 
 Player.prototype.reset = function(collision) {
   this.x = 200;
-  this.y = 400;
+  this.y = 370;
   this.speed = 1;
   this.move = { 'x' : 0, 'y' : 0 };
   if (collision) {
@@ -225,19 +226,19 @@ Player.prototype.updateScore = function() {
 Player.prototype.handleInput = function(key) {
   switch(key){
     case 'left' :
-      this.move.x = -this.speed;
+      this.move.x = -this.speed * 101;
       this.move.y = 0;
       break;
     case 'up' :
-      this.move.y = -this.speed;
+      this.move.y = -this.speed * 80;
       this.move.x = 0;
       break;
     case 'right' :
-      this.move.x = this.speed;
+      this.move.x = this.speed * 101;
       this.move.y = 0;
       break;
     case 'down' :
-      this.move.y = this.speed;
+      this.move.y = this.speed * 80;
       this.move.x = 0;
       break;
     case 'enter' :
