@@ -174,9 +174,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-      ctx.font = '20pt Calibri';
-      ctx.fillStyle = 'red';
-      ctx.fillText("Game Over", 100, 200);
+    
     }
 
     /* Go ahead and load all of the images we know we're going to need to

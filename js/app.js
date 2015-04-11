@@ -99,7 +99,7 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = -50; // start off canvas
     this.y = getRandomValue(1, 3) * 70;
-    this.speed = getRandomValue(20,100);
+    this.speed = getRandomValue(80,200);
 }
 
 Enemy.prototype.update = function(dt) {
@@ -129,7 +129,7 @@ Enemy.prototype.checkCollision = function() {
 Enemy.prototype.reset = function() {
   this.x = -50; // start off canvas
   this.y = getRandomValue(1, 3) * 70;
-  this.speed = getRandomValue(20,100);
+  this.speed = getRandomValue(80,300);
 }
 
 /*
