@@ -45,7 +45,8 @@ var count = 0,
 function writeTimer() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText("200/ " + count, 200, 603);
+  ctx.fillText("200/ ", 200, 603);
+  ctx.fillText(count, 240, 603);
   count = count + 1;
   clearInterval(counter);
 }
@@ -115,7 +116,6 @@ Gem.prototype.hide = function() {
 Gem.prototype.gemScore = function() {
   var gemScores = { 'Blue' : 10, 'Green' : 20, 'Orange' : 30, 'Heart' : 40, 'Key' : 100, 'Rock' : 0, 'Selector' : 5, 'Star' : 100 },
       currentGem = this.sprite;
-
   for (g in gemScores) {
     if (currentGem.match(g)) return gemScores[g];
   }

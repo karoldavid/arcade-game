@@ -109,7 +109,11 @@ var Engine = (function(global) {
         }
       });
       if (gem.checkCollision()) {
-        gem.hide(); // gem hides off canvas after player collects it
+        if (gem.sprite.match("Rock")) {
+          player.reset(true);
+        } else {
+          gem.hide();
+        } // gem hides off canvas after player collects it
       }
     }
 
