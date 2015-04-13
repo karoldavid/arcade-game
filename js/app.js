@@ -16,7 +16,7 @@ function getRandomValue(min, max) {
 
 function clearCanvasTopRight() {
   var canvas = document.getElementsByTagName("canvas")[0];
-  ctx.clearRect(250, 0, canvas.width, 200);
+  ctx.clearRect(300, 0, canvas.width, 200);
 }
 
 function clearCanvasBottom() {
