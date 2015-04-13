@@ -96,9 +96,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-
-        clearCanvasTop();
-        writeGameInfo();
+        gem.update();
         writeTimer();
     }
 
@@ -113,7 +111,7 @@ var Engine = (function(global) {
           player.reset(true);
         } else {
           gem.hide();
-        } // gem hides off canvas after player collects it
+        } // gem hides off canvas after collected by player
       }
     }
 
@@ -180,7 +178,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-
+      writeGameTitle();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -204,8 +202,8 @@ var Engine = (function(global) {
         'images/char-cat-girl.png',
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
-        'images/char-princess-girl.png'
-
+        'images/char-princess-girl.png',
+        'images/blank.png'
     ]);
     Resources.onReady(init);
 

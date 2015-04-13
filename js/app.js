@@ -14,9 +14,9 @@ function getRandomValue(min, max) {
  *
  */
 
-function clearCanvasTop() {
+function clearCanvasTopRight() {
   var canvas = document.getElementsByTagName("canvas")[0];
-  ctx.clearRect(0, 0, canvas.width, 60);
+  ctx.clearRect(250, 0, canvas.width, 200);
 }
 
 function clearCanvasBottom() {
@@ -24,13 +24,16 @@ function clearCanvasBottom() {
   ctx.clearRect(0, 585, canvas.width, canvas.height);
 }
 
-function writeGameInfo() {
+function writeGameTitle() {
   ctx.font = '20pt Calibri';
   ctx.fillStyle = 'blue';
-  ctx.fillText("Classic Arcade Game", 0, 40);
+  ctx.fillText("Classic Arcade Game", 0, 30);
+}
+
+function writeGameAction(action) {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText("Press Enter to Change Player", 250, 40);
+  ctx.fillText(action + "!", 300, 30);
 }
 
 /*
@@ -40,19 +43,20 @@ function writeGameInfo() {
  */
 
 var count = 0,
+    maxCount = 300,
     counter = setInterval(writeTimer, 1000);
 
 function writeTimer() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText("200/ ", 200, 603);
+  ctx.fillText(maxCount + "/ ", 200, 603);
   ctx.fillText(count, 240, 603);
   count = count + 1;
   clearInterval(counter);
 }
 
 function timeOut() {
-  if (count > 200) return true;
+  if (maxCount > 300) return true;
   return false;
 }
 
@@ -62,27 +66,29 @@ function timeOut() {
  *
  */
 
-function getImageURL() {
-  var gemImages = [
-          'images/Gem Blue.png',
+var Gem = function() {
+  this.init();
+}
+
+Gem.prototype.imageURLs = function() {
+  return ['images/Gem Blue.png',
           'images/Gem Green.png',
           'images/Gem Orange.png',
           'images/Heart.png',
           'images/Key.png',
           'images/Rock.png',
           'images/Selector.png',
-          'images/Star.png',
-        ],
-        image = getRandomValue(0, gemImages.length - 1);
-  return gemImages[image];
+          'images/Star.png' ]
 }
 
-var Gem = function() {
-  this.init();
+Gem.prototype.getImageURL = function() {
+  var gemImageURLs = this.imageURLs(),
+        image = getRandomValue(0, gemImageURLs.length - 1);
+  return gemImageURLs[image];
 }
 
 Gem.prototype.init = function() {
-  this.sprite = getImageURL();
+  this.sprite = this.getImageURL();
   this.x = getRandomValue(0, 4) * 101;
   this.y = getRandomValue(1, 3) * 70;
 }
@@ -91,10 +97,21 @@ Gem.prototype.reset = function() {
   this.init();
 }
 
+Gem.prototype.update = function() {
+  clearCanvasTopRight();
+  if (this.multiplyScore(player.name) != player.name) {
+    writeGameAction('Change Player');
+    ctx.drawImage(Resources.get(player.getPlayerURL(this.multiplyScore(player.name))), 450, -20, 40, 70);
+  } else {
+    writeGameAction('Keep movin')
+  }
+}
+
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+// checks collision of gem with player
 Gem.prototype.checkCollision = function() {
   var gemBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
@@ -110,17 +127,38 @@ Gem.prototype.checkCollision = function() {
 Gem.prototype.hide = function() {
   this.x = -100;  // put gem off canvas after player collects gem
   this.y = -100; // put gem off canvas after player collects gem
-  player.score += this.gemScore(); // player score inreases when gem collision with player occurs
+  if (this.multiplyScore(player.name) === player.name) {
+    player.score += this.gemScore() * 10; // player score increases when gem collision with player occurs
+  } else {
+    player.score += this.gemScore();
+  }
 }
 
-Gem.prototype.gemScore = function() {
-  var gemScores = { 'Blue' : 10, 'Green' : 20, 'Orange' : 30, 'Heart' : 40, 'Key' : 100, 'Rock' : 0, 'Selector' : 5, 'Star' : 100 },
+Gem.prototype.gemNames = function() {
+  return [ 'Blue', 'Green', 'Orange', 'Heart', 'Key', 'Rock', 'Selector', 'Star' ];
+}
+
+Gem.prototype.multiplyScore = function(currentPlayer) {
+  var players = player.getPlayerNames(),
+      gems = this.gemNames(),
+      gemPlayer = { 'Blue' : players[0], 'Green' : players[1], 'Orange' : players[2], 'Heart' : players[3], 'Star' : players[4] },
       currentGem = this.sprite;
-  for (g in gemScores) {
-    if (currentGem.match(g)) return gemScores[g];
+      for (g in gemPlayer) {
+        if (currentGem.match(g)) return gemPlayer[g];
+      }
+  return currentPlayer;
+}
+
+// different gems have different values
+Gem.prototype.gemScore = function() {
+  var gemScore = { 'Blue' : 10, 'Green' : 20, 'Orange' : 30, 'Heart' : 40, 'Key' : 100, 'Rock' : 0, 'Selector' : 5, 'Star' : 50 },
+      currentGem = this.sprite;
+  for (g in gemScore) {
+    if (currentGem.match(g)) return gemScore[g];
   }
   return 0;
 }
+
 /*
  *
  * enemies
@@ -138,7 +176,7 @@ Enemy.prototype.update = function(dt) {
   if (this.x <= 606) {
     this.x = this.x + (this.speed * dt);
   } else {
-    this.reset(); // enemy reaches right side of board
+    this.reset(); // enemy reaches right side of board and starts over again on the left side
   }
 }
 
@@ -182,9 +220,13 @@ var Player = function() {
   this.name = this.getPlayerName();
 }
 
+Player.prototype.getPlayerNames = function() {
+  return ['boy', 'cat', 'horn', 'pink', 'princess'];
+}
+
 // compares sprite url with names array to discract current player name
 Player.prototype.getPlayerName = function() {
-  var playerNames = ['boy', 'cat', 'horn', 'pink', 'princess'],
+  var playerNames = this.getPlayerNames(),
       length = playerNames.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
@@ -192,16 +234,28 @@ Player.prototype.getPlayerName = function() {
   }
 }
 
+Player.prototype.getPlayerURL = function(playerName) {
+  var playerNames = this.getPlayerNames();
+      length = playerNames.length;
+  if (playerName === playerNames[0]) {
+    return "images/char-" + playerName + ".png";
+  }
+  for (i = 1; i < length; i++) {
+    if (playerNames[i] === playerName )return "images/char-" + playerName + "-girl" + ".png";
+  }
+  return "images/blank.png";
+}
+
 // shuffles player when 'enter' is hit
 // matches current player sprite url against images array and shuffles accordingly
 Player.prototype.shufflePlayer = function() {
-  var playerImages = ['boy', 'cat', 'horn', 'pink', 'princess'],
-      length = playerImages.length,
+  var playerNames = this.getPlayerNames(),
+      length = playerNames.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerImages[i]) && i + 1 < length) return "images/char-" + playerImages[i+1] + "-girl" + ".png";
+    if (currentPlayer.match(playerNames[i]) && i + 1 < length) return "images/char-" + playerNames[i+1] + "-girl" + ".png";
   }
-  return "images/char-" + playerImages[0] + ".png";
+  return "images/char-" + playerNames[0] + ".png";
 }
 
 Player.prototype.update = function() {
