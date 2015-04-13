@@ -4,6 +4,7 @@
  *
  */
 
+// random values for player, gem and enemy position, speed etc.
 function getRandomValue(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -14,28 +15,34 @@ function getRandomValue(min, max) {
  *
  */
 
+// clear canvas partly on the top right to override changing action text
 function clearCanvasTopRight() {
   var canvas = document.getElementsByTagName("canvas")[0];
   ctx.clearRect(300, 0, canvas.width, 200);
 }
 
+// clear canvas bottom to override score, timer and player name
 function clearCanvasBottom() {
   var canvas = document.getElementsByTagName("canvas")[0];
   ctx.clearRect(0, 585, canvas.width, 25);
 }
 
+// write game title on the very top right
 function writeGameTitle() {
   ctx.font = '20pt Calibri';
   ctx.fillStyle = 'blue';
   ctx.fillText("Classic Arcade Game", 0, 30);
 }
 
+// game action tells the player whether he should move
+// or change the player to maximize gem score
 function writeGameAction(action) {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
   ctx.fillText(action + "!", 300, 30);
 }
 
+// short gem rules explanation is on the very bottom of the game
 function writeGameRules() {
   ctx.font = '12pt Calibri';
   ctx.fillStyle = 'gray';
@@ -48,8 +55,8 @@ function writeGameRules() {
 
 /*
  *
- * timer
- *
+ * timer, the player will have to beat the timer. the timer is always running.
+ * the more time the player needs the more scores he looses
  */
 
 var count = 0,
@@ -77,8 +84,8 @@ function timeOut() {
  */
 
 var Gem = function() {
-  this.init();
-};
+  this.init(); // gem is set twice (here and in reset), therefore I prefere
+};             // to call 2 times the function init
 
 Gem.prototype.imageURLs = function() {
   return [
@@ -112,11 +119,11 @@ Gem.prototype.reset = function() {
 Gem.prototype.update = function() {
   clearCanvasTopRight();
   if (this.multiplyScore(player.name) != player.name) {
-    writeGameAction('Change Player');
+    writeGameAction('Change Player'); // game action tells the player, to move
     ctx.drawImage(Resources.get(player.getPlayerURL(this.multiplyScore(player.name))), 450, -20, 40, 70);
   } else {
-      writeGameAction('Keep movin');
-  }
+      writeGameAction('Keep movin'); // game action tells the player that he has to change the player to get
+  }                                  //  extra gem score
 }
 
 Gem.prototype.render = function() {
@@ -127,8 +134,17 @@ Gem.prototype.render = function() {
 Gem.prototype.checkCollision = function() {
   var gemBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
-      g = { "right" : this.x + gemBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + gemBox.y },
-      p = { "right" : player.x + playerBox.x, "left" : player.x, "top" : player.y, "bottom" : player.y + playerBox.y };
+      g = {
+        "right" : this.x + gemBox.x,
+        "left" : this.x, "top" : this.y,
+        "bottom" : this.y + gemBox.y
+      },
+      p = {
+        "right" : player.x + playerBox.x,
+        "left" : player.x,
+        "top" : player.y,
+        "bottom" : player.y + playerBox.y
+      };
 
   return !( g.left > p.right ||
             g.right < p.left ||
@@ -137,7 +153,7 @@ Gem.prototype.checkCollision = function() {
 }
 
 Gem.prototype.hide = function() {
-  this.x = -100;  // put gem off canvas after player collects gem
+  this.x = -100;  // puts gem off canvas after player collects gem
   this.y = -100;
   if (this.multiplyScore(player.name) === player.name) {
     player.score += this.gemScoreList() * 10; // multiply gem score by 10 if gem collision with specific player occurs
@@ -159,6 +175,8 @@ Gem.prototype.gemNames = function() {
   ];
 }
 
+// matches the player with the collected gem, if there is a match, the actual
+// gem score is multiplied by 10
 Gem.prototype.multiplyScore = function(currentPlayer) {
   var players = player.getPlayerNames(),
       gems = this.gemNames(),
@@ -192,7 +210,7 @@ Gem.prototype.gemScoreList = function() {
      currentGem = this.sprite;
 
   for (g in gemScore) {
-    if (currentGem.match(g)) { return gemScore[g]; }
+    if (currentGem.match(g)) { return gemScore[g]; } // return current gem's value
   }
   return 0;
 }
@@ -288,7 +306,7 @@ Player.prototype.getPlayerName = function() {
   }
 }
 
-// returns current player url when player name is given
+// returns current player url depending on given player name
 Player.prototype.getPlayerURL = function(playerName) {
   var playerNames = this.getPlayerNames();
       length = playerNames.length;
@@ -312,7 +330,7 @@ Player.prototype.shufflePlayer = function() {
       return "images/char-" + playerNames[i+1] + "-girl" + ".png"; // url for girls
     }
   }
-  return "images/char-" + playerNames[0] + ".png"; // url for boy, shuffle restarts from 0
+  return "images/char-" + playerNames[0] + ".png"; // url for boy, shuffle restarts from 0, fallback
 }
 
 Player.prototype.update = function() {
@@ -353,13 +371,13 @@ Player.prototype.reset = function(collision) {
   this.speed = 1;
   this.move = { 'x' : 0, 'y' : 0 };
   if (collision) {
-    this.score = 0; // everythinh fatal such as collision or time out resets player score
+    this.score = 0; // everything fatal such as collision with enemy/ rock or time out resets player score
   } else {
       this.score -= Math.round(count / 10); // the more time the player needs to reach the water, the more score he looses
       if (this.score < 0) { this.score = 0; } // player score minimum is zero
   }
   count = 0;
-  gem.reset(); // make geme reappear
+  gem.reset(); // make gem reappear
 }
 
 Player.prototype.writeScore = function() {
