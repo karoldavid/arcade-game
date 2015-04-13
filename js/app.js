@@ -43,20 +43,20 @@ function writeGameAction(action) {
  */
 
 var count = 0,
-    maxCount = 300,
+    MAX_COUNT = 300,
     counter = setInterval(writeTimer, 1000);
 
 function writeTimer() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
-  ctx.fillText(maxCount + "/ ", 200, 603);
+  ctx.fillText(MAX_COUNT + "/ ", 200, 603);
   ctx.fillText(count, 240, 603);
   count = count + 1;
   clearInterval(counter);
 }
 
 function timeOut() {
-  if (maxCount > 300) return true;
+  if (count > MAX_COUNT) { return true; }
   return false;
 }
 
@@ -68,22 +68,24 @@ function timeOut() {
 
 var Gem = function() {
   this.init();
-}
+};
 
 Gem.prototype.imageURLs = function() {
-  return ['images/Gem Blue.png',
-          'images/Gem Green.png',
-          'images/Gem Orange.png',
-          'images/Heart.png',
-          'images/Key.png',
-          'images/Rock.png',
-          'images/Selector.png',
-          'images/Star.png' ]
+  return [
+    'images/Gem Blue.png',
+    'images/Gem Green.png',
+    'images/Gem Orange.png',
+    'images/Heart.png',
+    'images/Key.png',
+    'images/Rock.png',
+    'images/Selector.png',
+    'images/Star.png'
+  ];
 }
 
 Gem.prototype.getImageURL = function() {
   var gemImageURLs = this.imageURLs(),
-        image = getRandomValue(0, gemImageURLs.length - 1);
+      image = getRandomValue(0, gemImageURLs.length - 1);
   return gemImageURLs[image];
 }
 
@@ -103,7 +105,7 @@ Gem.prototype.update = function() {
     writeGameAction('Change Player');
     ctx.drawImage(Resources.get(player.getPlayerURL(this.multiplyScore(player.name))), 450, -20, 40, 70);
   } else {
-    writeGameAction('Keep movin')
+      writeGameAction('Keep movin');
   }
 }
 
@@ -111,7 +113,7 @@ Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// checks collision of gem with player
+// checks gem collision with player
 Gem.prototype.checkCollision = function() {
   var gemBox = { 'x' : 50, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
@@ -126,35 +128,61 @@ Gem.prototype.checkCollision = function() {
 
 Gem.prototype.hide = function() {
   this.x = -100;  // put gem off canvas after player collects gem
-  this.y = -100; // put gem off canvas after player collects gem
+  this.y = -100;
   if (this.multiplyScore(player.name) === player.name) {
-    player.score += this.gemScore() * 10; // player score increases when gem collision with player occurs
+    player.score += this.gemScoreList() * 10; // multiply gem score by 10 if gem collision with specific player occurs
   } else {
-    player.score += this.gemScore();
+      player.score += this.gemScoreList(); // player score increases by normal gem list score value when gem collision with player occurs
   }
 }
 
 Gem.prototype.gemNames = function() {
-  return [ 'Blue', 'Green', 'Orange', 'Heart', 'Key', 'Rock', 'Selector', 'Star' ];
+  return [
+    'Blue',
+    'Green',
+    'Orange',
+    'Heart',
+    'Key',
+    'Rock',
+    'Selector',
+    'Star'
+  ];
 }
 
 Gem.prototype.multiplyScore = function(currentPlayer) {
   var players = player.getPlayerNames(),
       gems = this.gemNames(),
-      gemPlayer = { 'Blue' : players[0], 'Green' : players[1], 'Orange' : players[2], 'Heart' : players[3], 'Star' : players[4] },
+      gemPlayer = {
+        'Blue' : players[0],
+        'Green' : players[1],
+        'Orange' : players[2],
+        'Heart' : players[3],
+        'Star' : players[4]
+      },
       currentGem = this.sprite;
-      for (g in gemPlayer) {
-        if (currentGem.match(g)) return gemPlayer[g];
-      }
+
+  for (g in gemPlayer) {
+    if (currentGem.match(g)) { return gemPlayer[g]; }
+  }
   return currentPlayer;
 }
 
 // different gems have different values
-Gem.prototype.gemScore = function() {
-  var gemScore = { 'Blue' : 10, 'Green' : 20, 'Orange' : 30, 'Heart' : 40, 'Key' : 100, 'Rock' : 0, 'Selector' : 5, 'Star' : 50 },
-      currentGem = this.sprite;
+Gem.prototype.gemScoreList = function() {
+  var gemScore = {
+    'Blue' : 10,
+    'Green' : 20,
+    'Orange' : 30,
+    'Heart' : 40,
+    'Key' : 100,
+    'Rock' : 0,
+    'Selector' : 5,
+    'Star' : 50
+  },
+     currentGem = this.sprite;
+
   for (g in gemScore) {
-    if (currentGem.match(g)) return gemScore[g];
+    if (currentGem.match(g)) { return gemScore[g]; }
   }
   return 0;
 }
@@ -170,13 +198,13 @@ var Enemy = function() {
     this.x = -101; // start off canvas
     this.y = getRandomValue(1, 3) * 70;
     this.speed = getRandomValue(80,200);
-}
+};
 
 Enemy.prototype.update = function(dt) {
   if (this.x <= 606) {
     this.x = this.x + (this.speed * dt);
   } else {
-    this.reset(); // enemy reaches right side of board and starts over again on the left side
+      this.reset(); // when enemy reaches right side of board and starts over again on the left side
   }
 }
 
@@ -184,12 +212,22 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// checks collision of enemies with player
+// checks enemy collision with player
 Enemy.prototype.checkCollision = function() {
   var enemyBox = { 'x' : 75, 'y' : 50 },
       playerBox = { 'x' : 50, 'y' : 50 },
-      e = { "right" : this.x + enemyBox.x, "left" : this.x, "top" : this.y, "bottom" : this.y + enemyBox.y },
-      p = { "right" : player.x + playerBox.x, "left" : player.x , "top" : player.y, "bottom" : player.y + playerBox.y };
+      e = {
+        "right" : this.x + enemyBox.x,
+        "left" : this.x,
+        "top" : this.y,
+        "bottom" : this.y + enemyBox.y
+      },
+      p = {
+        "right" : player.x + playerBox.x,
+        "left" : player.x ,
+        "top" : player.y,
+        "bottom" : player.y + playerBox.y
+      };
 
   return !( e.left > p.right ||
             e.right < p.left ||
@@ -197,7 +235,7 @@ Enemy.prototype.checkCollision = function() {
             e.bottom < p.top);
 }
 
-// enemy gets new random coordinats and speed
+// enemy gets new random coordinates and speed
 Enemy.prototype.reset = function() {
   this.x = -101; // start off canvas
   this.y = getRandomValue(1, 3) * 70;
@@ -218,32 +256,39 @@ var Player = function() {
   this.move = { 'x' : 0, 'y' : 0 };
   this.score = 0;
   this.name = this.getPlayerName();
-}
+};
 
 Player.prototype.getPlayerNames = function() {
-  return ['boy', 'cat', 'horn', 'pink', 'princess'];
+  return [
+    'boy',
+    'cat',
+    'horn',
+    'pink',
+    'princess'
+  ];
 }
 
-// compares sprite url with names array to discract current player name
+// compares sprite url with names array to extract current player name
 Player.prototype.getPlayerName = function() {
   var playerNames = this.getPlayerNames(),
       length = playerNames.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerNames[i])) return playerNames[i];
+    if (currentPlayer.match(playerNames[i])) { return playerNames[i]; }
   }
 }
 
+// returns current player url when player name is given
 Player.prototype.getPlayerURL = function(playerName) {
   var playerNames = this.getPlayerNames();
       length = playerNames.length;
   if (playerName === playerNames[0]) {
-    return "images/char-" + playerName + ".png";
+    return "images/char-" + playerName + ".png"; // url for boy
   }
   for (i = 1; i < length; i++) {
-    if (playerNames[i] === playerName )return "images/char-" + playerName + "-girl" + ".png";
+    if (playerNames[i] === playerName ) { return "images/char-" + playerName + "-girl" + ".png"; } // url for girls
   }
-  return "images/blank.png";
+  return "images/blank.png"; // fallback
 }
 
 // shuffles player when 'enter' is hit
@@ -253,19 +298,21 @@ Player.prototype.shufflePlayer = function() {
       length = playerNames.length,
       currentPlayer = this.sprite;
   for (var i = 0; i < length; i++) {
-    if (currentPlayer.match(playerNames[i]) && i + 1 < length) return "images/char-" + playerNames[i+1] + "-girl" + ".png";
+    if (currentPlayer.match(playerNames[i]) && i + 1 < length) {
+      return "images/char-" + playerNames[i+1] + "-girl" + ".png"; // url for girls
+    }
   }
-  return "images/char-" + playerNames[0] + ".png";
+  return "images/char-" + playerNames[0] + ".png"; // url for boy, shuffle restarts from 0
 }
 
 Player.prototype.update = function() {
-  this.moveInBounds(); // player position only changes within the defined bounds
+  this.moveInBounds(); // player position changes only within the predefined bounds
   if (this.detectGoal()) {
     this.score += 100; // score increas by 100 when player reaches water
     this.reset(false); // game continues from start
   }
   if (timeOut()) {
-    this.reset(true);
+    this.reset(true); // game over/ reset
   }
   clearCanvasBottom();
   this.writePlayerName();
@@ -278,11 +325,11 @@ Player.prototype.render = function() {
 
 // makes sure that player coordinates only change if the player moves inside the given bounds
 Player.prototype.moveInBounds = function() {
-  var newX = this.x + this.move.x,
-      newY = this.y + this.move.y;
-  if (newX >= -80 && newX <= 480) this.x = newX;
-  if (newY >= -90 && newY <= 370) this.y = newY;
-  this.move = { 'x' : 0, 'y' : 0 };
+  var newX = this.x + this.move.x, // calculate new x-coordiante
+      newY = this.y + this.move.y; // calculate new y coordinate
+  if (newX >= -80 && newX <= 480) { this.x = newX; } // if in bounds on x-axis update players x-coordinate
+  if (newY >= -90 && newY <= 370) { this.y = newY; } // if in bounds on y-axis update players y-coordinate
+  this.move = { 'x' : 0, 'y' : 0 }; // reset move variable to zero
 }
 
 // checks if the player reaches water
@@ -296,10 +343,10 @@ Player.prototype.reset = function(collision) {
   this.speed = 1;
   this.move = { 'x' : 0, 'y' : 0 };
   if (collision) {
-    this.score = 0;
+    this.score = 0; // everythinh fatal such as collision or time out resets player score
   } else {
-    this.score -= Math.round(count / 10); // the more time the player needs to reach the water, the more score he looses
-    if (this.score < 0) this.score = 0;
+      this.score -= Math.round(count / 10); // the more time the player needs to reach the water, the more score he looses
+      if (this.score < 0) { this.score = 0; } // player score minimum is zero
   }
   count = 0;
   gem.reset(); // make geme reappear
@@ -316,6 +363,12 @@ Player.prototype.writePlayerName = function() {
   ctx.fillStyle = 'red';
   ctx.fillText(this.name, 400, 603);
 }
+
+/*
+ *
+ * controls
+ *
+ */
 
 Player.prototype.handleInput = function(key) {
   switch(key){
@@ -339,22 +392,16 @@ Player.prototype.handleInput = function(key) {
       this.sprite = this.shufflePlayer();
       this.name = this.getPlayerName();
       break;
-    }
+  }
 }
 
-/*
- *
- * controls
- *
- */
-
 document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        13: 'enter', // shuffle player
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
-    player.handleInput(allowedKeys[e.keyCode]);
+  var allowedKeys = {
+    13: 'enter', // shuffle player
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down'
+  };
+  player.handleInput(allowedKeys[e.keyCode]);
 });

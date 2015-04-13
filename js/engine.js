@@ -107,11 +107,11 @@ var Engine = (function(global) {
         }
       });
       if (gem.checkCollision()) {
-        if (gem.sprite.match("Rock")) {
-          player.reset(true);
+        if (gem.sprite.match("Rock")) { // player collision with gem 'Rock' is fatal
+          player.reset(true); // game restarts
         } else {
-          gem.hide();
-        } // gem hides off canvas after collected by player
+          gem.hide(); // gem hides off canvas after collected by player
+        }
       }
     }
 
