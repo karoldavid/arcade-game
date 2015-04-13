@@ -21,7 +21,7 @@ function clearCanvasTopRight() {
 
 function clearCanvasBottom() {
   var canvas = document.getElementsByTagName("canvas")[0];
-  ctx.clearRect(0, 585, canvas.width, 20);
+  ctx.clearRect(0, 585, canvas.width, 25);
 }
 
 function writeGameTitle() {
