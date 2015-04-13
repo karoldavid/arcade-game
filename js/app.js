@@ -21,7 +21,7 @@ function clearCanvasTopRight() {
 
 function clearCanvasBottom() {
   var canvas = document.getElementsByTagName("canvas")[0];
-  ctx.clearRect(0, 585, canvas.width, canvas.height);
+  ctx.clearRect(0, 585, canvas.width, 20);
 }
 
 function writeGameTitle() {
@@ -34,6 +34,16 @@ function writeGameAction(action) {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
   ctx.fillText(action + "!", 300, 30);
+}
+
+function writeGameRules() {
+  ctx.font = '12pt Calibri';
+  ctx.fillStyle = 'gray';
+  ctx.fillText("Cursors: Move", 0, 630);
+  ctx.fillText("Enter: Change Player", 150, 630);
+  ctx.fillText("Multiply Gem Value: Choose appropriate Player", 0, 650);
+  ctx.fillText("Beat Timer: Reach Water", 0, 670);
+  ctx.fillText("Game Over: Collision with Bug/ Rock or Time Out", 0, 690);
 }
 
 /*
