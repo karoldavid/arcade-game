@@ -98,23 +98,23 @@ Gem.prototype.imageURLs = function() {
     'images/Selector.png',
     'images/Star.png'
   ];
-}
+};
 
 Gem.prototype.getImageURL = function() {
   var gemImageURLs = this.imageURLs(),
       image = getRandomValue(0, gemImageURLs.length - 1);
   return gemImageURLs[image];
-}
+};
 
 Gem.prototype.init = function() {
   this.sprite = this.getImageURL();
   this.x = getRandomValue(0, 4) * 101;
   this.y = getRandomValue(1, 3) * 70;
-}
+};
 
 Gem.prototype.reset = function() {
   this.init();
-}
+};
 
 Gem.prototype.update = function() {
   clearCanvasTopRight();
@@ -124,11 +124,11 @@ Gem.prototype.update = function() {
   } else {
       writeGameAction('Keep movin'); // game action tells the player that he has to change the player to get
   }                                  //  extra gem score
-}
+};
 
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // checks gem collision with player
 Gem.prototype.checkCollision = function() {
@@ -150,7 +150,7 @@ Gem.prototype.checkCollision = function() {
             g.right < p.left ||
             g.top > p.bottom ||
             g.bottom < p.top);
-}
+};
 
 Gem.prototype.hide = function() {
   this.x = -100;  // puts gem off canvas after player collects gem
@@ -160,7 +160,7 @@ Gem.prototype.hide = function() {
   } else {
       player.score += this.gemScoreList(); // player score increases by normal gem list score value when gem collision with player occurs
   }
-}
+};
 
 Gem.prototype.gemNames = function() {
   return [
@@ -173,7 +173,7 @@ Gem.prototype.gemNames = function() {
     'Selector',
     'Star'
   ];
-}
+};
 
 // matches the player with the collected gem, if there is a match, the actual
 // gem score is multiplied by 10
@@ -189,11 +189,11 @@ Gem.prototype.multiplyScore = function(currentPlayer) {
       },
       currentGem = this.sprite;
 
-  for (g in gemPlayer) {
+  for (var g in gemPlayer) {
     if (currentGem.match(g)) { return gemPlayer[g]; }
   }
   return currentPlayer;
-}
+};
 
 // different gems have different values
 Gem.prototype.gemScoreList = function() {
@@ -209,11 +209,11 @@ Gem.prototype.gemScoreList = function() {
   },
      currentGem = this.sprite;
 
-  for (g in gemScore) {
+  for (var g in gemScore) {
     if (currentGem.match(g)) { return gemScore[g]; } // return current gem's value
   }
   return 0;
-}
+};
 
 /*
  *
@@ -234,11 +234,11 @@ Enemy.prototype.update = function(dt) {
   } else {
       this.reset(); // when enemy reaches right side of board and starts over again on the left side
   }
-}
+};
 
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // checks enemy collision with player
 Enemy.prototype.checkCollision = function() {
@@ -261,14 +261,14 @@ Enemy.prototype.checkCollision = function() {
             e.right < p.left ||
             e.top > p.bottom ||
             e.bottom < p.top);
-}
+};
 
 // enemy gets new random coordinates and speed
 Enemy.prototype.reset = function() {
   this.x = -101; // start off canvas
   this.y = getRandomValue(1, 3) * 70;
   this.speed = getRandomValue(80,300);
-}
+};
 
 /*
  *
@@ -294,7 +294,7 @@ Player.prototype.getPlayerNames = function() {
     'pink',
     'princess'
   ];
-}
+};
 
 // compares sprite url with names array to extract current player name
 Player.prototype.getPlayerName = function() {
@@ -304,7 +304,7 @@ Player.prototype.getPlayerName = function() {
   for (var i = 0; i < length; i++) {
     if (currentPlayer.match(playerNames[i])) { return playerNames[i]; }
   }
-}
+};
 
 // returns current player url depending on given player name
 Player.prototype.getPlayerURL = function(playerName) {
@@ -313,11 +313,11 @@ Player.prototype.getPlayerURL = function(playerName) {
   if (playerName === playerNames[0]) {
     return "images/char-" + playerName + ".png"; // url for boy
   }
-  for (i = 1; i < length; i++) {
+  for (var i = 1; i < length; i++) {
     if (playerNames[i] === playerName ) { return "images/char-" + playerName + "-girl" + ".png"; } // url for girls
   }
   return "images/blank.png"; // fallback
-}
+};
 
 // shuffles player when 'enter' is hit
 // matches current player sprite url against images array and shuffles accordingly
@@ -331,7 +331,7 @@ Player.prototype.shufflePlayer = function() {
     }
   }
   return "images/char-" + playerNames[0] + ".png"; // url for boy, shuffle restarts from 0, fallback
-}
+};
 
 Player.prototype.update = function() {
   this.moveInBounds(); // player position changes only within the predefined bounds
@@ -345,11 +345,11 @@ Player.prototype.update = function() {
   clearCanvasBottom();
   this.writePlayerName();
   this.writeScore();
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // makes sure that player coordinates only change if the player moves inside the given bounds
 Player.prototype.moveInBounds = function() {
@@ -358,12 +358,12 @@ Player.prototype.moveInBounds = function() {
   if (newX >= -80 && newX <= 480) { this.x = newX; } // if in bounds on x-axis update players x-coordinate
   if (newY >= -90 && newY <= 370) { this.y = newY; } // if in bounds on y-axis update players y-coordinate
   this.move = { 'x' : 0, 'y' : 0 }; // reset move variable to zero
-}
+};
 
 // checks if the player reaches water
 Player.prototype.detectGoal = function() {
   return !( this.y >= 0);
-}
+};
 
 Player.prototype.reset = function(collision) {
   this.x = 200;
@@ -378,19 +378,19 @@ Player.prototype.reset = function(collision) {
   }
   count = 0;
   gem.reset(); // make gem reappear
-}
+};
 
 Player.prototype.writeScore = function() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
   ctx.fillText("Score: " + this.score, 0, 603);
-}
+};
 
 Player.prototype.writePlayerName = function() {
   ctx.font = '14pt Calibri';
   ctx.fillStyle = 'red';
   ctx.fillText(this.name, 400, 603);
-}
+};
 
 /*
  *
@@ -421,15 +421,21 @@ Player.prototype.handleInput = function(key) {
       this.name = this.getPlayerName();
       break;
   }
-}
+};
 
 document.addEventListener('keyup', function(e) {
   var allowedKeys = {
     13: 'enter', // shuffle player
-    37: 'left',
-    38: 'up',
-    39: 'right',
-    40: 'down'
+    37: 'left',  // move player left
+    38: 'up',    // move player up
+    39: 'right', // move player right
+    40: 'down'   // move player down
   };
   player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//create all variables necessary to start game
+var allEnemies = [];
+for (var i = 0; i < 3; i++) { allEnemies.push(new Enemy()); } // create 3 enemies
+var player = new Player(); // create player
+var gem = new Gem(); // create gem
