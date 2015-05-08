@@ -54,6 +54,7 @@ function clearCanvasBottom() {
 
 /**
  * @function writeGameTitle
+ * The function is called by the function reset in engine.js.
  * The function writeGameTitle writes the game title on the very top left
  * of the canvas.
  */
@@ -77,6 +78,7 @@ function writeGameAction(action) {
 
 /**
  * @function writeGameRules
+ * The function is called by the function reset in engine.js.
  * The function writeGameRules displays the game rules explanation.
  * You find it on the very bottom of the game.
  * The README.md file contains a more detailed explanation of the game rules.
