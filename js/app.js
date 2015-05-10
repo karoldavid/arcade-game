@@ -72,7 +72,7 @@ function clearCanvasBottom() {
 function writeGameTitle() {
     ctx.font = '20pt Calibri';
     ctx.fillStyle = 'blue';
-    ctx.fillText("Classic Arcade Game", 0, 30);
+    ctx.fillText("GEM LAND", 0, 30);
 }
 
 /**
