@@ -100,6 +100,13 @@ var Engine = (function(global) {
         writeTimer();
     }
 
+    /* This is called by the update function  and loops through all of the
+     * objects within your allEnemies array  and the gem as defined in app.js
+     * and calls their checkCollision() methods. If there is a collion detected,
+     * the game is over and is reset or the player gets extra scores according
+     * to the collected gem.
+     */
+
     function checkCollisions() {
       allEnemies.forEach(function(enemy) {
         if (enemy.checkCollision()) {
@@ -173,9 +180,8 @@ var Engine = (function(global) {
         gem.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /* This function writes the game title and game rules onto the canvas.
+     * It's only called once by the init() method.
      */
     function reset() {
       writeGameTitle();
