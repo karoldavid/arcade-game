@@ -114,7 +114,7 @@ var Engine = (function(global) {
         }
       });
       if (gem.checkCollision()) {
-        if (gem.sprite.match("Rock")) { // player collision with gem 'Rock' is fatal
+        if (gem.sprite.match("rock")) { // player collision with gem 'Rock' is fatal
           player.reset(true); // player looses all scores and game starts from zero
         } else {
           gem.hide(); // gem hides off canvas after collected by player
@@ -198,14 +198,14 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Gem Blue.png',
-        'images/Gem Green.png',
-        'images/Gem Orange.png',
-        'images/Heart.png',
-        'images/Key.png',
-        'images/Rock.png',
-        'images/Selector.png',
-        'images/Star.png',
+        'images/gem-blue.png',
+        'images/gem-green.png',
+        'images/gem-orange.png',
+        'images/heart.png',
+        'images/key.png',
+        'images/rock.png',
+        'images/selector.png',
+        'images/star.png',
         'images/char-cat-girl.png',
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',

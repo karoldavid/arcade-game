@@ -170,14 +170,14 @@ var Gem = function() {
  */
 Gem.prototype.imageURLs = function() {
     return [
-      'images/Gem Blue.png',
-      'images/Gem Green.png',
-      'images/Gem Orange.png',
-      'images/Heart.png',
-      'images/Key.png',
-      'images/Rock.png',
-      'images/Selector.png',
-      'images/Star.png'
+      'images/gem-blue.png',
+      'images/gem-green.png',
+      'images/gem-orange.png',
+      'images/heart.png',
+      'images/key.png',
+      'images/rock.png',
+      'images/selector.png',
+      'images/star.png'
     ];
 };
 
@@ -288,14 +288,14 @@ Gem.prototype.hide = function() {
  */
 Gem.prototype.gemNames = function() {
     return [
-      'Blue',
-      'Green',
-      'Orange',
-      'Heart',
-      'Key',
-      'Rock',
-      'Selector',
-      'Star'
+      'blue',
+      'green',
+      'orange',
+      'heart',
+      'key',
+      'rock',
+      'selector',
+      'star'
     ];
 };
 
@@ -308,11 +308,11 @@ Gem.prototype.gemNames = function() {
 Gem.prototype.multiplyScore = function(currentPlayer) {
     var players = player.getPlayerNames(),
         gemPlayer = {
-          'Blue': players[0],
-          'Green': players[1],
-          'Orange': players[2],
-          'Heart': players[3],
-          'Star': players[4]
+          'blue': players[0],
+          'green': players[1],
+          'orange': players[2],
+          'heart': players[3],
+          'star': players[4]
     },
         currentGem = this.sprite;
     for (var g in gemPlayer) {
@@ -329,14 +329,14 @@ Gem.prototype.multiplyScore = function(currentPlayer) {
  */
 Gem.prototype.gemScoreList = function() {
     var gemScore = {
-          'Blue': 10,
-          'Green': 20,
-          'Orange': 30,
-          'Heart': 40,
-          'Key': 100,
-          'Rock': 0,
-          'Selector': 5,
-          'Star': 50
+          'blue': 10,
+          'green': 20,
+          'orange': 30,
+          'heart': 40,
+          'key': 100,
+          'rock': 0,
+          'selector': 5,
+          'star': 50
     },
         currentGem = this.sprite;
     for (var g in gemScore) {
