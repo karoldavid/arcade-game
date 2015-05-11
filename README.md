@@ -1,5 +1,6 @@
+GEM LAND (Arcade Game Clone)
 Simple JavaScript and HTML5 browser game.
-Just click on index.html to run it.
+Click on index.html to run it.
 
 Here is a link to the live version:
 http://karoldavid.github.io/arcade-game/
