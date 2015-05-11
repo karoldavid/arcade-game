@@ -8,11 +8,10 @@
 
 /**
  * This file provides the Game functionality and starts the game.
- * As a very basic feature, random values are produced for speed and position
- * (or type of appearing gems).
- * Fundamental to the functioning of the game are the enemy and the player
- * prototypes, and, additionally, collectible items, the gems.
- * Furthermore, the file provides essential methods to detect collisions
+ * As a very basic functionality, random values are produced for speed and position
+ * (or type of appearing gems). Fundamental to the functioning of the game are
+ * the enemy and the player prototypes, and, additionally, collectible items,
+ * the gems. Furthermore, the file provides essential methods to detect collisions
  * (called in engine.js) and to update the objects (called in engine.js).
  * It also handles the player input via keybord, the timer/ time-out, the
  * score calculation and the player selection.
@@ -26,9 +25,9 @@
 
 /**
  * @function getRandomValue
- * @param {integer} min
- * @param {integer} max
- * @returns a random integer value within the given bounds of min and max
+ * @param {number} min
+ * @param {number} max
+ * @returns a random value within the given bounds of min and max
  */
 function getRandomValue(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -49,7 +48,7 @@ function getRandomValue(min, max) {
  * in order to maximize the current gem's value.)
  */
 function clearCanvasTopRight() {
-    var canvas = document.getElementsByTagName("canvas")[0];
+    var canvas = document.getElementsByTagName('canvas')[0];
     ctx.clearRect(300, 0, canvas.width, 200);
 }
 
@@ -59,7 +58,7 @@ function clearCanvasTopRight() {
  * score, the timer and the player name.
  */
 function clearCanvasBottom() {
-    var canvas = document.getElementsByTagName("canvas")[0];
+    var canvas = document.getElementsByTagName('canvas')[0];
     ctx.clearRect(0, 585, canvas.width, 25);
 }
 
@@ -72,11 +71,12 @@ function clearCanvasBottom() {
 function writeGameTitle() {
     ctx.font = '20pt Calibri';
     ctx.fillStyle = 'blue';
-    ctx.fillText("GEM LAND", 0, 30);
+    ctx.fillText('GEM LAND', 0, 30);
 }
 
 /**
  * @function writeGameAction
+ * @param {string} action
  * The function writes the 'game action' on the very top right.
  * The 'game action' tells the player whether he should move towards the water
  * or change the player by pressing 'enter' in order to maximize the current
@@ -85,24 +85,24 @@ function writeGameTitle() {
 function writeGameAction(action) {
     ctx.font = '14pt Calibri';
     ctx.fillStyle = 'red';
-    ctx.fillText(action + "!", 300, 30);
+    ctx.fillText(action + '!', 300, 30);
 }
 
 /**
  * @function writeGameRules
- * The function displays the game rules explanation. You find it on the very
- * bottom of the game board.
+ * The function displays the game rules explanation. You find the rules on the
+ * very bottom of the game board.
  * The function is called by the function reset in engine.js.
  * The README.md file contains a more detailed explanation of the game rules.
  */
 function writeGameRules() {
     ctx.font = '12pt Calibri';
     ctx.fillStyle = 'gray';
-    ctx.fillText("Cursors: Move", 0, 630);
-    ctx.fillText("Enter: Change Player", 150, 630);
-    ctx.fillText("Multiply Gem Value: Choose appropriate Player", 0, 650);
-    ctx.fillText("Beat Timer: Reach Water", 0, 670);
-    ctx.fillText("Game Over: Collision with Bug/ Rock or Time Out", 0, 690);
+    ctx.fillText('Cursors: Move', 0, 630);
+    ctx.fillText('Enter: Change Player', 150, 630);
+    ctx.fillText('Multiply Gem Value: Choose appropriate Player', 0, 650);
+    ctx.fillText('Beat Timer: Reach Water', 0, 670);
+    ctx.fillText('Game Over: Collision with Bug/ Rock or Time Out', 0, 690);
 }
 
 /**
@@ -111,8 +111,8 @@ function writeGameRules() {
  */
 
 /**
- * @global {integer} count start value of the game time counter
- * @constant {integer} MAX_COUNT maximum value of the game time counter
+ * @global {number} count start value of the game time counter
+ * @constant {number} MAX_COUNT maximum value of the game time counter
  * @function counter sets the interval of the game time counter
  * The function is called by the function updateEntities in engine.js.
  */
@@ -129,7 +129,7 @@ var count = 0,
 function writeTimer() {
     ctx.font = '14pt Calibri';
     ctx.fillStyle = 'red';
-    ctx.fillText(MAX_COUNT + "/ ", 200, 603);
+    ctx.fillText(MAX_COUNT + '/ ', 200, 603);
     ctx.fillText(count, 240, 603);
     count = count + 1;
     clearInterval(counter);
@@ -151,8 +151,7 @@ function timeOut() {
  * Some of the gems match to a specific player character. If the gem is collected
  * by the specific player character, the value is multiplied by 10. The Rock is
  * part of the gem list, but running into it has fatal consequences for the player.
- * The consequences of running into the Rock are handled by the function
- * checkCollisions in engine.js.
+ * This consequences are handled by the function checkCollisions in engine.js.
  */
 
 /**
@@ -167,7 +166,7 @@ var Gem = function() {
 
 /**
  * @function imageURLs
- * @returns an array with eight different image url strings for the gem sprite.
+ * @returns an array with eight different image url strings for the gem sprite
  */
 Gem.prototype.imageURLs = function() {
     return [
@@ -195,7 +194,7 @@ Gem.prototype.getRandomImageURL = function() {
 /**
  * @function init
  * The function initalizes the current gem. The gem gets a random image url
- * string and a random x and y integer position value.
+ * string and a random x and y position value.
  */
 Gem.prototype.init = function() {
     this.sprite = this.getRandomImageURL();
@@ -241,25 +240,25 @@ Gem.prototype.render = function() {
 
 /**
  * @function checkCollision
- * The function is called by the function checkCollisions in engine.js.
- * The function checks whether a collision between a gem and the player occurs.
  * @returns true or false
+ * The function checks whether a collision between a gem and the player has
+ * occured.
+ * The function is called by the function checkCollisions in engine.js.
  */
 Gem.prototype.checkCollision = function() {
-    var gemBox = { 'x' : 50, 'y' : 50 },
-        playerBox = { 'x' : 50, 'y' : 50 },
+    var gemBox = {'x': 50, 'y': 50},
+        playerBox = {'x': 50, 'y': 50},
         g = {
-          "right" : this.x + gemBox.x,
-          "left" : this.x, "top" : this.y,
-          "bottom" : this.y + gemBox.y
-        },
+          'right': this.x + gemBox.x,
+          'left': this.x, 'top' : this.y,
+          'bottom': this.y + gemBox.y
+    },
         p = {
-          "right" : player.x + playerBox.x,
-          "left" : player.x,
-          "top" : player.y,
-          "bottom" : player.y + playerBox.y
+          'right': player.x + playerBox.x,
+          'left': player.x,
+          'top': player.y,
+          'bottom': player.y + playerBox.y
     };
-
     return !( g.left > p.right ||
               g.right < p.left ||
               g.top > p.bottom ||
@@ -302,59 +301,57 @@ Gem.prototype.gemNames = function() {
 
 /**
  * @function multiplyScore
- * The function matches the player with the collected gem. If they match,
- * it returns the current player name, and the current gem value can be
- * multiplied by ten.
+ * @param {string} currentPlayer
+ * @returns player name string
+ * The function matches the current collected gem with the gem-player object.
  */
 Gem.prototype.multiplyScore = function(currentPlayer) {
-    var players = player.getPlayerNames(), // gets player names array
-        gemPlayer = { // assigns gems to players
-          'Blue' : players[0],
-          'Green' : players[1],
-          'Orange' : players[2],
-          'Heart' : players[3],
-          'Star' : players[4]
+    var players = player.getPlayerNames(),
+        gemPlayer = {
+          'Blue': players[0],
+          'Green': players[1],
+          'Orange': players[2],
+          'Heart': players[3],
+          'Star': players[4]
     },
         currentGem = this.sprite;
-
     for (var g in gemPlayer) {
       if (currentGem.match(g)) {
         return gemPlayer[g];
       }
     }
-    return currentPlayer;
+    return currentPlayer; // fallback
 };
 
 /**
  * @function gemScoreList
- * @returns the current gem's value from the gem-score-list
+ * @returns the current gem's value from the gem-score object
  */
 Gem.prototype.gemScoreList = function() {
     var gemScore = {
-      'Blue' : 10,
-      'Green' : 20,
-      'Orange' : 30,
-      'Heart' : 40,
-      'Key' : 100,
-      'Rock' : 0,
-      'Selector' : 5,
-      'Star' : 50
+          'Blue': 10,
+          'Green': 20,
+          'Orange': 30,
+          'Heart': 40,
+          'Key': 100,
+          'Rock': 0,
+          'Selector': 5,
+          'Star': 50
     },
-       currentGem = this.sprite;
-
+        currentGem = this.sprite;
     for (var g in gemScore) {
       if (currentGem.match(g)) {
         return gemScore[g];
       }
     }
-    return 0;
+    return 0; // fallback
 };
 
 /**
- * Enemy: Up to 6 enemy bugs always cross the board from left to right
+ * Enemy: Up to 6 enemy bugs cross the board from left to right
  * with different speed. Their sole hope is to run into the player
- * so that the he looses all of his points and has to restart from zero.
- * Once an enemy bug disapears on the right, it reapears shortly after
+ * so that he looses all of his points and has to restart from zero.
+ * Once an enemy bug disappears on the right, it reappears shortly after
  * with a new random vertical position and speed on the left of the board.
  */
 
@@ -367,11 +364,12 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = -101; // start off canvas
     this.y = getRandomValue(1, 3) * 70;
-    this.speed = getRandomValue(80,200);
+    this.speed = getRandomValue(80, 200);
 };
 
 /**
  * @function update
+ * @param {number} dt time delta for smooth animation
  * The function resets the enemy when it reaches the right side of the board so
  * that it can reappear on the left side.
  * The function is called by the function updateEntities in engine.js.
@@ -400,21 +398,20 @@ Enemy.prototype.render = function() {
  * The function is called by the function checkCollisions in engine.js.
  */
 Enemy.prototype.checkCollision = function() {
-    var enemyBox = { 'x' : 75, 'y' : 50 },
-        playerBox = { 'x' : 50, 'y' : 50 },
+    var enemyBox = {'x': 75, 'y': 50},
+        playerBox = {'x': 50, 'y': 50},
         e = {
-          "right" : this.x + enemyBox.x,
-          "left" : this.x,
-          "top" : this.y,
-          "bottom" : this.y + enemyBox.y
+          'right': this.x + enemyBox.x,
+          'left': this.x,
+          'top': this.y,
+          'bottom': this.y + enemyBox.y
     },
         p = {
-          "right" : player.x + playerBox.x,
-          "left" : player.x ,
-          "top" : player.y,
-          "bottom" : player.y + playerBox.y
+          'right': player.x + playerBox.x,
+          'left': player.x ,
+          'top': player.y,
+          'bottom': player.y + playerBox.y
     };
-
     return !( e.left > p.right ||
               e.right < p.left ||
               e.top > p.bottom ||
@@ -423,18 +420,19 @@ Enemy.prototype.checkCollision = function() {
 
 /**
  * @function reset
- * The function resets the enemy's position and speed to new random values.
+ * The function resets the enemy's position and speed to new random values. And
+ * puts him back to start of canvas on the left.
  */
 Enemy.prototype.reset = function() {
     this.x = -101; // start off canvas
     this.y = getRandomValue(1, 3) * 70;
-    this.speed = getRandomValue(80,300);
+    this.speed = getRandomValue(80, 300);
 };
 
 /**
  * The player can be one of five different characters. The default character is
  * a little boy. The character can be changed at any given moment by pressing
- * 'enter'. He can collect gems on his way to the goal, the water.
+ * 'enter'. The player can collect gems on his way to the goal, the water.
  */
 
 /**
@@ -444,18 +442,18 @@ Enemy.prototype.reset = function() {
  * the player's name.
  */
 var Player = function() {
-    this.sprite = "images/char-boy.png"; // default player
-    this.x = 200; // start x-position
-    this.y = 370; // start y-position
+    this.sprite = 'images/char-boy.png';
+    this.x = 200;
+    this.y = 370;
     this.speed = 1;
-    this.move = { 'x' : 0, 'y' : 0 }; // when y & x = 0 player does not move
+    this.move = {'x': 0, 'y': 0}; // when y & x = 0 player does not move
     this.score = 0; // initial/ minimum score; score never goes below zero
-    this.name = this.getCurrentPlayerName(); // gets the current player name from the sprite url
+    this.name = this.getCurrentPlayerName();
 };
 
 /**
  * @function getPlayerNames
- * @ returns an array with five player name strings.
+ * @returns an array with five player name strings
  */
 Player.prototype.getPlayerNames = function() {
     return [
@@ -478,10 +476,11 @@ Player.prototype.getCurrentPlayerName = function() {
         length = playerNames.length,
         currentPlayer = this.sprite; // get current player sprite url
     for (var i = 0; i < length; i++) {
-      if (currentPlayer.match(playerNames[i])) { // match player name to sprite url
-        return playerNames[i]; // if there is a match, return the player name
+      if (currentPlayer.match(playerNames[i])) {
+        return playerNames[i];
       }
     }
+    return playerNames[0]; // fallback
 };
 
 /**
@@ -494,15 +493,15 @@ Player.prototype.getCurrentPlayerURL = function(playerName) {
     var playerNames = this.getPlayerNames();
         length = playerNames.length;
     if (playerName === playerNames[0]) {
-      return "images/char-" + playerName + ".png"; // url for boy sprite
+      return 'images/char-' + playerName + '.png'; // url for boy sprite
     }
     for (var i = 1; i < length; i++) {
       if (playerNames[i] === playerName )
       {
-        return "images/char-" + playerName + "-girl" + ".png"; // url for girls sprite
+        return 'images/char-' + playerName + '-girl' + '.png'; // url for girls sprite
       }
     }
-    return "images/blank.png"; // fallback
+    return 'images/blank.png'; // fallback
 };
 
 /**
@@ -518,10 +517,10 @@ Player.prototype.shufflePlayer = function() {
         currentPlayer = this.sprite;
     for (var i = 0; i < length; i++) {
       if (currentPlayer.match(playerNames[i]) && i + 1 < length) {
-        return "images/char-" + playerNames[i+1] + "-girl" + ".png"; // url for girls sprite
+        return 'images/char-' + playerNames[i+1] + '-girl' + '.png'; // url for girls sprite
       }
     }
-    return "images/char-" + playerNames[0] + ".png"; // url for boy sprite, shuffle restarts from 0
+    return 'images/char-' + playerNames[0] + '.png'; // url for boy sprite
 };
 
 /**
@@ -536,13 +535,13 @@ Player.prototype.shufflePlayer = function() {
  * The function is called by the function updateEntities in engine.js.
  */
 Player.prototype.update = function() {
-    this.moveInBounds(); // player position changes only within the predefined bounds
+    this.moveInBounds();
     if (this.detectGoal()) {
-      this.score += 100; // score increases by 100 when player reaches water
-      this.reset(false); // game continues from start
+      this.score += 100;
+      this.reset(false);
     }
     if (timeOut()) {
-      this.reset(true); // game over/ reset
+      this.reset(true);
     }
     clearCanvasBottom();
     this.writePlayerName();
@@ -564,11 +563,11 @@ Player.prototype.render = function() {
  * inside the given bounds of the board.
  */
 Player.prototype.moveInBounds = function() {
-    var newX = this.x + this.move.x, // calculate new x-coordiante
-        newY = this.y + this.move.y; // calculate new y coordinate
-    if (newX >= -80 && newX <= 480) { this.x = newX; } // if in bounds on x-axis update players x-coordinate
-    if (newY >= -90 && newY <= 370) { this.y = newY; } // if in bounds on y-axis update players y-coordinate
-    this.move = { 'x' : 0, 'y' : 0 }; // reset move variable to zero
+    var newX = this.x + this.move.x,
+        newY = this.y + this.move.y;
+    if (newX >= -80 && newX <= 480) { this.x = newX; }
+    if (newY >= -90 && newY <= 370) { this.y = newY; }
+    this.move = {'x': 0, 'y': 0};
 };
 
 /**
@@ -593,12 +592,12 @@ Player.prototype.reset = function(collision) {
     this.x = 200;
     this.y = 370;
     this.speed = 1;
-    this.move = { 'x' : 0, 'y' : 0 };
+    this.move = {'x': 0, 'y': 0};
     if (collision) {
-      this.score = 0; // everything fatal such as collision with enemy/ rock or time out resets player score
+      this.score = 0; // collision with enemy/ rock or time out resets player score
     } else {
-        this.score -= Math.round(count / 10); // the more time the player needs to reach the water, the more score he looses
-        if (this.score < 0) { this.score = 0; } // player score minimum is zero
+        this.score -= Math.round(count / 10);
+        if (this.score < 0) { this.score = 0; }
     }
     count = 0;
     gem.reset(); // make gem reappear
@@ -611,7 +610,7 @@ Player.prototype.reset = function(collision) {
 Player.prototype.writeScore = function() {
     ctx.font = '14pt Calibri';
     ctx.fillStyle = 'red';
-    ctx.fillText("Score: " + this.score, 0, 603);
+    ctx.fillText('Score: ' + this.score, 0, 603);
 };
 
 /**
@@ -626,6 +625,7 @@ Player.prototype.writePlayerName = function() {
 
 /**
  * @function handleInput
+ * @param {string} key current key pressed
  * The function handles the input and therefore allows to control the game.
  * 'Arrow keys' move the player into the according direction and 'return'
  * shuffles the player's character.
@@ -650,23 +650,28 @@ Player.prototype.handleInput = function(key) {
         break;
       case 'enter' :
         this.sprite = this.shufflePlayer();
-        this.name = this.getPlayerName();
+        this.name = this.getCurrentPlayerName();
+        break;
+      default :
         break;
     }
 };
 
 /**
+ * @param {number} keyup current key pressed
+ * @param {function} function(e)
  * Adds an event listener to the DOM that listens for allowed keypresses
  * such as 'enter', to shuffle the player character, and the 'arrow keys', to
- * move the player in one of four directions.
+ * move the player in one of four directions. Passes the current pressed key to
+ * the handleInput function.
  */
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-      13: 'enter', // shuffle player character
-      37: 'left',  // move player left
-      38: 'up',    // move player up
-      39: 'right', // move player right
-      40: 'down'   // move player down
+      13: 'enter',
+      37: 'left',
+      38: 'up',
+      39: 'right',
+      40: 'down'
     };
     player.handleInput(allowedKeys[e.keyCode]);
 });
@@ -682,16 +687,19 @@ var allEnemies = [],
 
 /**
  * @function startGame
- * @param {integer} numEnemies
- * The function startGame initializes all global objects (enemies, player, gem)
- * necessary to start the game.
+ * @param {number} numEnemies
+ * The function startGame initializes all global objects (<= 6 enemies,
+ * 1 player, 1 gem) necessary to start the game.
  */
 var startGame = function(numEnemies) {
-    for (var i = 0; (i < numEnemies) && (i < 5); i++) { // max enemies <= 6
-      allEnemies.push(new Enemy()); // creates x enemy bugs/ enemies
+    for (var i = 0; (i < numEnemies) && (i < 5); i++) {
+      allEnemies.push(new Enemy());
     }
-    player = new Player(); // creates one player
-    gem = new Gem(); // creates one gem
+    player = new Player();
+    gem = new Gem();
 };
 
-startGame(5); // starts the game with the given number of enemies
+/**
+ * starts the game with the given number of enemies
+ */
+startGame(5);
