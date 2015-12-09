@@ -1,12 +1,17 @@
-GEM LAND (Arcade Game Clone)
-Simple JavaScript and HTML5 browser game.
-Click on index.html to run it.
+# GEM LAND - ARCADE GAME CLONE PROJECT
 
 Here is a link to the live version:
 http://karoldavid.github.io/arcade-game/
 
-How the Game Works
-------------------
+## Description
+
+GEM LAND is my third project in Udacity's Front-End Web Developer Nanodegree. The project specifications require to create a clone of the classic arcade game Frogger using HTML5 Canvas and Javascript.
+
+## How to Run
+Simple JavaScript and HTML5 browser game.
+Click on index.html to run it.
+
+## How to Play
 
 Enemies: 1 to 6 bugs
 Player: 1 (may be changed to boy, cat, horn, pink, or princess by pressing
@@ -45,8 +50,8 @@ Orange = horn, Heart = pink, Star = princess).
 On the top right of the board the player gets a hint if it is a good time
 to shuffle the player character or to keep moving.
 
-Score
------
+## Scores
+
 Reach Water: 100
 Timer Count: - (time counter * 10)
 Gem Value: Blue = 10, Green = 20, Orange = 30, Heart = 40, Key = 100,
@@ -58,3 +63,7 @@ Score: 100 - (time counter * 10) + value of collected gem (if player character
 matches with the collected gem multiply value of current gem with 10).
 
 Minimum player score is 0.
+
+## Questions?
+
+Please email me at k.zysk@zoho.com
