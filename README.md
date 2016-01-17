@@ -65,7 +65,7 @@ Minimum player score is 0.
 
 ## FEND Nanodegree
 
-The Arcade Game cLONE is part of the Udacity Front-End Webdeveloper Nanodegree
+The Arcade Game Clone is part of the Udacity Front-End Webdeveloper Nanodegree
 
 FEND PROGRAM https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001
 
