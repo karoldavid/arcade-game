@@ -1,7 +1,6 @@
-# GEM LAND - ARCADE GAME CLONE PROJECT
+# Gem Land - Arcade Game Clone
 
-Here is a link to the live version:
-http://karoldavid.github.io/arcade-game/
+Here is a link to the live version: http://karoldavid.github.io/arcade-game/
 
 ## Description
 
@@ -64,6 +63,12 @@ matches with the collected gem multiply value of current gem with 10).
 
 Minimum player score is 0.
 
+## FEND Nanodegree
+
+The Arcade Game cLONE is part of the Udacity Front-End Webdeveloper Nanodegree
+
+FEND PROGRAM https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001
+
 ## Questions?
 
-Please email me at k.zysk@zoho.com
+Email me at k.zysk@zoho.com
